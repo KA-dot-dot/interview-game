@@ -1,0 +1,1953 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>面試模擬回饋賽</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Oswald:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #f0f6ff;
+    --navy2: #e2eef9;
+    --navy3: #d0e4f5;
+    --teal: #2196c9;
+    --teal2: #1a7aaa;
+    --amber: #e07b00;
+    --amber2: #c46b00;
+    --coral: #d94040;
+    --text: #1a2d42;
+    --text2: #3d6080;
+    --text3: #7aa0be;
+    --border: rgba(33,150,201,0.25);
+    --border2: rgba(33,150,201,0.13);
+    --card: rgba(255,255,255,0.85);
+    --radius: 12px;
+    --radius-lg: 18px;
+    --bg: #eaf4fb;
+    --bg2: #fff;
+    --header-bg: rgba(255,255,255,0.92);
+    --input-bg: rgba(255,255,255,0.9);
+  }
+
+  .dark-mode {
+    --navy: #1a2535;
+    --navy2: #1e2d40;
+    --navy3: #243347;
+    --teal: #38b2e8;
+    --teal2: #2a9fd4;
+    --amber: #f0960a;
+    --amber2: #d47f00;
+    --coral: #e85050;
+    --text: #e4f0fb;
+    --text2: #93b8d0;
+    --text3: #5a85a0;
+    --border: rgba(56,178,232,0.25);
+    --border2: rgba(56,178,232,0.12);
+    --card: rgba(26,37,53,0.9);
+    --bg: #111c2b;
+    --bg2: #152033;
+    --header-bg: rgba(17,28,43,0.95);
+    --input-bg: rgba(26,40,60,0.9);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans TC', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse at 20% 50%, rgba(33,150,201,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, rgba(224,123,0,0.05) 0%, transparent 40%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .app { position: relative; z-index: 1; }
+
+  /* ─── HEADER ─── */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 28px;
+    background: var(--header-bg);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+    transition: background 0.3s;
+  }
+  .header-logo { display: flex; align-items: center; gap: 12px; }
+  .logo-icon {
+    width: 36px; height: 36px;
+    background: var(--teal);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .logo-text {
+    font-family: 'Oswald', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--teal);
+    letter-spacing: 1px;
+  }
+  .header-right { display: flex; align-items: center; gap: 8px; }
+  .header-nav { display: flex; gap: 6px; }
+  .nav-btn {
+    padding: 7px 16px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--text2);
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .nav-btn:hover { color: var(--text); background: var(--border2); }
+  .nav-btn.active {
+    background: rgba(33,150,201,0.12);
+    border-color: var(--teal);
+    color: var(--teal);
+    font-weight: 500;
+  }
+  .icon-btn {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text2);
+    font-size: 16px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .icon-btn:hover { border-color: var(--teal); color: var(--teal); }
+
+  /* ─── PAGES ─── */
+  .page { display: none; padding: 28px; max-width: 1100px; margin: 0 auto; }
+  .page.active { display: block; }
+
+  /* ─── SECTION TITLE ─── */
+  .section-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 2.5px;
+    color: var(--teal); text-transform: uppercase; margin-bottom: 6px;
+  }
+  .section-title {
+    font-size: 26px; font-weight: 900; color: var(--text);
+    margin-bottom: 4px; line-height: 1.2;
+  }
+  .section-sub { font-size: 14px; color: var(--text2); margin-bottom: 28px; }
+
+  /* ─── CARD ─── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 22px;
+    backdrop-filter: blur(8px);
+    transition: background 0.3s;
+  }
+  .card-title {
+    font-size: 13px; font-weight: 700; color: var(--teal);
+    letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 14px;
+  }
+
+  /* ─── GRID ─── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+  /* ─── SETUP PAGE ─── */
+  .import-area {
+    width: 100%; height: 180px;
+    background: var(--input-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-family: 'Noto Sans TC', monospace;
+    font-size: 14px; padding: 14px; resize: vertical; outline: none;
+    line-height: 1.8; transition: border-color 0.2s, background 0.3s;
+  }
+  .import-area:focus { border-color: var(--teal); }
+  .import-area::placeholder { color: var(--text3); }
+
+  .input-row { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .input-label { font-size: 13px; color: var(--text2); min-width: 90px; }
+  .num-input {
+    width: 72px;
+    background: var(--input-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 15px; font-weight: 700; text-align: center;
+    padding: 7px; outline: none; transition: border-color 0.2s;
+  }
+  .num-input:focus { border-color: var(--teal); }
+  .input-hint { font-size: 12px; color: var(--text3); }
+
+  /* ─── ABSENT MEMBER MGMT ─── */
+  .member-manage-area {
+    margin-top: 12px;
+    background: var(--input-bg);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    max-height: 160px;
+    overflow-y: auto;
+  }
+  .member-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(33,150,201,0.1);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3px 8px 3px 10px;
+    font-size: 12px;
+    color: var(--text2);
+    margin: 3px;
+    transition: all 0.2s;
+  }
+  .member-chip.absent {
+    background: rgba(217,64,64,0.1);
+    border-color: rgba(217,64,64,0.3);
+    color: var(--coral);
+    text-decoration: line-through;
+    opacity: 0.7;
+  }
+  .chip-remove {
+    width: 16px; height: 16px; border-radius: 50%;
+    border: none; background: rgba(217,64,64,0.15);
+    color: var(--coral); font-size: 12px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s; line-height: 1;
+  }
+  .chip-remove:hover { background: var(--coral); color: white; }
+
+  /* ─── BUTTONS ─── */
+  .btn {
+    display: inline-flex;
+    align-items: center; justify-content: center;
+    gap: 8px; padding: 10px 22px;
+    border-radius: 10px; border: 1px solid;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 14px; font-weight: 700;
+    cursor: pointer; transition: all 0.18s; white-space: nowrap;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary { background: var(--teal); border-color: var(--teal); color: var(--navy); }
+  .btn-primary:hover { background: var(--teal2); border-color: var(--teal2); }
+  .btn-amber { background: var(--amber); border-color: var(--amber); color: var(--navy); }
+  .btn-amber:hover { background: var(--amber2); border-color: var(--amber2); }
+  .btn-ghost { background: transparent; border-color: var(--border); color: var(--text2); }
+  .btn-ghost:hover { border-color: var(--teal); color: var(--teal); background: var(--border2); }
+  .btn-coral { background: transparent; border-color: var(--coral); color: var(--coral); }
+  .btn-coral:hover { background: rgba(217,64,64,0.1); }
+  .btn-lg { padding: 13px 30px; font-size: 16px; border-radius: 12px; }
+  .btn-sm { padding: 6px 14px; font-size: 12px; border-radius: 7px; }
+
+  /* ─── MEMBER BADGE ─── */
+  #member-count-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(33,150,201,0.08);
+    border: 1px solid var(--teal);
+    border-radius: 20px; padding: 4px 14px;
+    font-size: 13px; color: var(--teal); font-weight: 700; margin-bottom: 16px;
+  }
+
+  /* ─── GROUPS DISPLAY ─── */
+  .groups-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 14px; margin-top: 18px;
+  }
+  .group-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden; transition: border-color 0.2s;
+  }
+  .group-card:hover { border-color: rgba(0,201,177,0.4); }
+  .group-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 11px 14px;
+    background: rgba(33,150,201,0.08); border-bottom: 1px solid var(--border2);
+  }
+  .group-name-text { font-weight: 700; font-size: 14px; color: var(--teal); letter-spacing: 0.5px; }
+  .group-count {
+    font-size: 11px; color: var(--teal);
+    background: rgba(33,150,201,0.12); border: 1px solid rgba(33,150,201,0.3);
+    border-radius: 10px; padding: 2px 8px; font-weight: 700;
+  }
+  .group-body { padding: 10px 14px 12px; }
+  .group-roles { display: flex; flex-direction: column; gap: 5px; }
+  .role-row { display: flex; align-items: center; gap: 8px; }
+  .role-badge {
+    font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 4px;
+    letter-spacing: 0.5px; white-space: nowrap; min-width: 44px; text-align: center;
+  }
+  .role-badge.host {
+    background: rgba(224,123,0,0.12); color: var(--amber); border: 1px solid rgba(224,123,0,0.3);
+  }
+  .role-badge.judge {
+    background: rgba(33,150,201,0.1); color: var(--teal); border: 1px solid rgba(33,150,201,0.25);
+  }
+  .role-name { font-size: 13px; color: var(--text); }
+
+  /* ─── DRAG DROP for manual group editing ─── */
+  .group-card.drag-over { border-color: var(--amber); background: rgba(224,123,0,0.06); }
+  .role-row[draggable="true"] { cursor: grab; }
+  .role-row[draggable="true"]:active { cursor: grabbing; opacity: 0.7; }
+
+  /* ─── TIMER PAGE ─── */
+  .phase-tabs {
+    display: flex; gap: 0;
+    background: var(--card);
+    border: 1px solid var(--border); border-radius: 12px;
+    padding: 4px; margin-bottom: 24px; width: fit-content;
+  }
+  .phase-tab {
+    padding: 9px 20px; border-radius: 9px; border: none;
+    background: transparent; color: var(--text2);
+    font-family: 'Noto Sans TC', sans-serif; font-size: 13px; font-weight: 500;
+    cursor: pointer; transition: all 0.2s;
+    display: flex; align-items: center; gap: 7px;
+  }
+  .phase-tab:hover { color: var(--text); }
+  .phase-tab.active { background: var(--teal); color: var(--navy); font-weight: 700; }
+  .phase-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; opacity: 0.6; }
+
+  /* ─── TIMER DISPLAY ─── */
+  .timer-layout { display: grid; grid-template-columns: 1fr auto; gap: 28px; align-items: start; }
+  .timer-main { display: flex; flex-direction: column; align-items: center; padding: 40px 30px; }
+  .phase-info-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(33,150,201,0.1); border: 1px solid rgba(33,150,201,0.25);
+    border-radius: 20px; padding: 5px 16px; font-size: 12px; color: var(--teal);
+    font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 28px;
+  }
+  .phase-num-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); }
+
+  .timer-face {
+    position: relative; width: 260px; height: 260px; margin-bottom: 24px;
+    transition: filter 0.3s;
+  }
+  .timer-face.flash-red { animation: flashRed 0.5s ease; }
+  @keyframes flashRed {
+    0% { filter: none; }
+    20% { filter: drop-shadow(0 0 30px rgba(217,64,64,0.9)) brightness(1.3); }
+    60% { filter: drop-shadow(0 0 60px rgba(217,64,64,0.6)) brightness(1.15); }
+    100% { filter: none; }
+  }
+  /* Full-screen flash overlay */
+  #flash-overlay {
+    position: fixed; inset: 0; pointer-events: none; z-index: 9000;
+    background: rgba(217,64,64,0); transition: background 0.05s;
+  }
+  #flash-overlay.active { animation: screenFlash 1.2s ease; }
+  @keyframes screenFlash {
+    0% { background: rgba(217,64,64,0); }
+    15% { background: rgba(217,64,64,0.45); }
+    50% { background: rgba(217,64,64,0.3); }
+    100% { background: rgba(217,64,64,0); }
+  }
+
+  .timer-svg { transform: rotate(-90deg); width: 100%; height: 100%; }
+  .timer-circle-bg { fill: none; stroke: rgba(33,150,201,0.12); stroke-width: 10; }
+  .timer-circle-prog {
+    fill: none; stroke: var(--teal); stroke-width: 10; stroke-linecap: round;
+    transition: stroke-dashoffset 1s linear, stroke 0.3s;
+  }
+  .timer-digits {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  }
+  .timer-time {
+    font-family: 'Oswald', sans-serif; font-size: 62px; font-weight: 700;
+    color: var(--text); line-height: 1; letter-spacing: 2px;
+  }
+  .timer-time.warning { color: var(--amber); }
+  .timer-time.danger { color: var(--coral); }
+  .timer-label-sm { font-size: 11px; color: var(--text3); letter-spacing: 1px; text-transform: uppercase; }
+
+  .timer-controls { display: flex; gap: 10px; align-items: center; margin-bottom: 18px; }
+
+  /* ─── AUTO-ADVANCE ─── */
+  .auto-advance-bar {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px; margin-top: 12px;
+    background: rgba(224,123,0,0.07); border: 1px solid rgba(224,123,0,0.2);
+    border-radius: var(--radius); font-size: 13px; color: var(--text2);
+  }
+  .auto-advance-bar.countdown-active {
+    background: rgba(224,123,0,0.12); border-color: rgba(224,123,0,0.4);
+    color: var(--amber); font-weight: 700;
+  }
+  .toggle-switch {
+    position: relative; width: 38px; height: 22px; flex-shrink: 0;
+  }
+  .toggle-switch input { opacity: 0; width: 0; height: 0; }
+  .toggle-slider {
+    position: absolute; cursor: pointer; inset: 0;
+    background: rgba(33,150,201,0.2); border-radius: 22px; transition: all 0.25s;
+  }
+  .toggle-slider::before {
+    content: ''; position: absolute; height: 16px; width: 16px; left: 3px; bottom: 3px;
+    background: white; border-radius: 50%; transition: 0.25s;
+  }
+  .toggle-switch input:checked + .toggle-slider { background: var(--amber); }
+  .toggle-switch input:checked + .toggle-slider::before { transform: translateX(16px); }
+
+  /* ─── PHASE DESC ─── */
+  .phase-desc-card {
+    background: rgba(255,255,255,0.7); border: 1px solid var(--border2);
+    border-radius: var(--radius); padding: 18px;
+  }
+  .dark-mode .phase-desc-card { background: rgba(26,37,53,0.7); }
+  .phase-desc-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 10px; }
+  .phase-desc-list { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+  .phase-desc-list li {
+    font-size: 13px; color: var(--text2);
+    display: flex; align-items: flex-start; gap: 8px; line-height: 1.6;
+  }
+  .phase-desc-list li::before { content: '▸'; color: var(--teal); flex-shrink: 0; margin-top: 1px; }
+
+  /* Timer settings */
+  .timer-settings {
+    background: rgba(255,255,255,0.7); border: 1px solid var(--border2);
+    border-radius: var(--radius); padding: 18px; margin-top: 18px;
+  }
+  .dark-mode .timer-settings { background: rgba(26,37,53,0.7); }
+  .settings-row {
+    display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;
+  }
+  .settings-label { font-size: 13px; color: var(--text2); }
+  .settings-value { display: flex; align-items: center; gap: 8px; font-weight: 700; color: var(--text); font-size: 14px; }
+  .step-btn {
+    width: 28px; height: 28px; border-radius: 6px;
+    border: 1px solid var(--border); background: var(--input-bg); color: var(--text2);
+    font-size: 16px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; transition: all 0.15s;
+  }
+  .step-btn:hover { border-color: var(--teal); color: var(--teal); }
+
+  /* ─── STATUS BAR ─── */
+  .status-bar {
+    display: flex; gap: 14px; padding: 14px 20px;
+    background: rgba(33,150,201,0.06); border: 1px solid var(--border2);
+    border-radius: var(--radius); margin-bottom: 22px;
+    align-items: center; flex-wrap: wrap;
+  }
+  .status-item { display: flex; align-items: center; gap: 7px; font-size: 13px; color: var(--text2); }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); flex-shrink: 0; }
+  .status-dot.amber { background: var(--amber); }
+  .status-dot.coral { background: var(--coral); }
+
+  /* ─── TOAST ─── */
+  #toast {
+    position: fixed; bottom: 28px; left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--card);
+    border: 1px solid var(--teal); color: var(--teal);
+    padding: 11px 24px; border-radius: 30px;
+    font-size: 14px; font-weight: 700; z-index: 9999;
+    transition: transform 0.35s cubic-bezier(.34,1.56,.64,1);
+    white-space: nowrap; backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(33,150,201,0.2);
+  }
+  #toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ─── CONFIRM DIALOG ─── */
+  .modal-backdrop {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 8000;
+    display: none; align-items: center; justify-content: center; backdrop-filter: blur(4px);
+  }
+  .modal-backdrop.show { display: flex; }
+  .modal {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg);
+    padding: 28px 32px; max-width: 380px; width: 90%; text-align: center;
+    animation: fadeIn 0.2s ease;
+  }
+  .modal-icon { font-size: 36px; margin-bottom: 12px; }
+  .modal-title { font-size: 18px; font-weight: 900; color: var(--text); margin-bottom: 8px; }
+  .modal-msg { font-size: 14px; color: var(--text2); margin-bottom: 22px; line-height: 1.6; }
+  .modal-btns { display: flex; gap: 10px; justify-content: center; }
+
+  /* ─── SESSION LOG ─── */
+  .log-entry {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 12px; border-radius: 8px;
+    background: rgba(33,150,201,0.04); border: 1px solid var(--border2);
+    font-size: 13px; color: var(--text2); margin-bottom: 7px;
+    transition: background 0.2s;
+  }
+  .log-time { font-size: 11px; color: var(--text3); white-space: nowrap; }
+  .log-label { flex: 1; }
+
+  /* ─── OBSERVATION CHECKLIST ─── */
+  .obs-list { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+  .obs-item {
+    background: var(--card);
+    border: 1px solid var(--border2); border-radius: 9px;
+    padding: 11px 14px; display: flex; gap: 11px; align-items: flex-start;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .obs-item.checked {
+    background: rgba(33,150,201,0.08); border-color: rgba(33,150,201,0.4);
+  }
+  .obs-check {
+    width: 22px; height: 22px; border-radius: 6px;
+    border: 2px solid var(--teal); background: transparent;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: all 0.2s; font-size: 13px; color: transparent;
+  }
+  .obs-item.checked .obs-check {
+    background: var(--teal); color: white; border-color: var(--teal);
+  }
+  .obs-text { font-size: 13px; color: var(--text2); line-height: 1.6; flex: 1; }
+  .obs-text strong { color: var(--text); font-weight: 700; }
+
+  /* ─── FILLER WORD COUNTER ─── */
+  .filler-counter-area {
+    background: var(--card); border: 1px solid rgba(217,64,64,0.3);
+    border-radius: var(--radius); padding: 16px; margin-top: 16px;
+  }
+  .filler-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; margin-top: 12px; }
+  .filler-btn {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    padding: 10px 8px; border-radius: 10px;
+    border: 1px solid rgba(217,64,64,0.25); background: rgba(217,64,64,0.05);
+    cursor: pointer; transition: all 0.18s; user-select: none;
+  }
+  .filler-btn:hover { border-color: var(--coral); background: rgba(217,64,64,0.12); }
+  .filler-btn:active { transform: scale(0.95); }
+  .filler-word { font-size: 14px; font-weight: 700; color: var(--coral); }
+  .filler-count {
+    font-family: 'Oswald', sans-serif; font-size: 28px; font-weight: 700;
+    color: var(--text); line-height: 1;
+  }
+  .filler-total {
+    font-size: 12px; color: var(--text3); margin-top: 10px; text-align: right;
+  }
+
+  /* ─── SANDWICH FEEDBACK FORM ─── */
+  .sandwich-form { margin-top: 20px; }
+  .sandwich-section {
+    display: flex; gap: 12px; padding: 12px; border-radius: 10px;
+    border: 1px solid var(--border2); margin-bottom: 10px; align-items: flex-start;
+  }
+  .sandwich-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+  .sandwich-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 5px; }
+  .sandwich-textarea {
+    width: 100%; background: var(--input-bg); border: 1px solid var(--border2);
+    border-radius: 8px; color: var(--text); font-family: 'Noto Sans TC', sans-serif;
+    font-size: 13px; padding: 8px 10px; resize: none; outline: none; min-height: 60px;
+    transition: border-color 0.2s;
+  }
+  .sandwich-textarea:focus { border-color: var(--teal); }
+  .section-pos .sandwich-label { color: var(--teal); }
+  .section-imp .sandwich-label { color: var(--coral); }
+  .section-enc .sandwich-label { color: var(--amber); }
+  .section-pos { background: rgba(33,150,201,0.05); border-color: rgba(33,150,201,0.2); }
+  .section-imp { background: rgba(217,64,64,0.05); border-color: rgba(217,64,64,0.2); }
+  .section-enc { background: rgba(224,123,0,0.05); border-color: rgba(224,123,0,0.2); }
+
+  /* ─── GROUPS PAGE EXPORT ─── */
+  .print-area-hidden { display: none; }
+
+  /* ─── RESPONSIVE ─── */
+  @media(max-width: 700px) {
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .timer-layout { grid-template-columns: 1fr; }
+    .timer-face { width: 200px; height: 200px; }
+    .timer-time { font-size: 46px; }
+    .page { padding: 16px; }
+    .phase-tabs { flex-wrap: wrap; }
+    .header { padding: 12px 16px; }
+  }
+
+  /* ─── FULLSCREEN ─── */
+  .fullscreen-overlay {
+    position: fixed; inset: 0; z-index: 7000;
+    display: none; flex-direction: column;
+    align-items: center; justify-content: flex-start;
+    background: var(--bg);
+    overflow-y: auto;
+    padding: 28px 20px 40px;
+  }
+  .fullscreen-overlay.show { display: flex; }
+  .fs-timer-face { position: relative; width: 400px; height: 400px; margin-bottom: 30px; }
+  .fs-timer-face.flash-red { animation: flashRed 0.5s ease; }
+  @media(max-width:500px) {
+    .fs-timer-face { width: 280px; height: 280px; }
+  }
+  .fs-timer-time {
+    font-family: 'Oswald', sans-serif; font-size: 100px; font-weight: 700;
+    color: var(--text); line-height: 1; letter-spacing: 4px;
+  }
+  @media(max-width:500px) { .fs-timer-time { font-size: 72px; } }
+  .fs-timer-time.warning { color: var(--amber); }
+  .fs-timer-time.danger { color: var(--coral); }
+  .fs-phase-name { font-size: 18px; color: var(--text2); letter-spacing: 2px; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; }
+  .fs-status { font-size: 14px; color: var(--text3); letter-spacing: 1px; margin-bottom: 28px; }
+  .fs-esc-hint {
+    position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%);
+    font-size: 12px; color: var(--text3); letter-spacing: 1px;
+    background: var(--card); border: 1px solid var(--border2);
+    border-radius: 20px; padding: 4px 14px;
+    z-index: 9500; pointer-events: none;
+    opacity: 1; transition: opacity 0.6s ease;
+  }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+  .pulsing { animation: pulse 1s ease-in-out infinite; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+  .fade-in { animation: fadeIn 0.3s ease; }
+
+  .timer-groups-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px;
+  }
+  .timer-group-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden;
+  }
+  .timer-group-card-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 9px 13px; background: rgba(33,150,201,0.08); border-bottom: 1px solid var(--border2);
+  }
+  .timer-group-card-title { font-size: 13px; font-weight: 700; color: var(--teal); }
+  .timer-group-card-count {
+    font-size: 11px; color: var(--teal); background: rgba(33,150,201,0.12);
+    border: 1px solid rgba(33,150,201,0.3); border-radius: 10px; padding: 2px 7px; font-weight: 700;
+  }
+  .timer-group-card-body { padding: 10px 13px 12px; display: flex; flex-direction: column; gap: 5px; }
+  .timer-role-row { display: flex; align-items: center; gap: 8px; }
+  .timer-role-row.interviewee {
+    padding: 5px 7px; background: rgba(224,123,0,0.08);
+    border: 1px solid rgba(224,123,0,0.2); border-radius: 7px;
+  }
+  .timer-role-name { font-size: 13px; color: var(--text); font-weight: 500; }
+  .timer-role-row.interviewee .timer-role-name { color: var(--amber); font-weight: 700; }
+
+  .divider { height: 1px; background: var(--border2); margin: 20px 0; }
+  .flex-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .spacer { flex: 1; }
+  .text-teal { color: var(--teal); }
+  .text-amber { color: var(--amber); }
+  .text-muted { color: var(--text2); font-size: 13px; }
+  .mt-4 { margin-top: 16px; }
+  .mt-2 { margin-top: 8px; }
+
+  /* Print styles */
+  @media print {
+    .header, .header-nav, .icon-btn, .btn, .phase-tabs, .timer-controls,
+    .filler-counter-area, .auto-advance-bar, .sandwich-form { display: none !important; }
+    .page { display: block !important; padding: 10px; }
+    .groups-grid { grid-template-columns: repeat(3, 1fr); }
+    .group-card { break-inside: avoid; }
+  }
+
+  /* ─── STUDENT MODE ─── */
+  .role-mode-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 700;
+    border: 1px solid; cursor: default;
+  }
+  .role-mode-badge.teacher {
+    background: rgba(33,150,201,0.1); border-color: var(--teal); color: var(--teal);
+  }
+  .role-mode-badge.student {
+    background: rgba(224,123,0,0.1); border-color: var(--amber); color: var(--amber);
+  }
+  .student-banner {
+    background: linear-gradient(135deg, rgba(224,123,0,0.12), rgba(224,123,0,0.04));
+    border: 1px solid rgba(224,123,0,0.3); border-radius: var(--radius-lg);
+    padding: 18px 22px; margin-bottom: 24px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .student-banner-icon { font-size: 28px; }
+  .student-banner-text { flex: 1; }
+  .student-banner-title { font-size: 16px; font-weight: 900; color: var(--text); margin-bottom: 3px; }
+  .student-banner-sub { font-size: 13px; color: var(--text2); }
+  .student-select {
+    background: var(--input-bg); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--text);
+    font-family: 'Noto Sans TC', sans-serif; font-size: 14px;
+    padding: 8px 12px; outline: none; width: 100%; cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .student-select:focus { border-color: var(--teal); }
+  .submit-result-box {
+    background: var(--input-bg); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 14px; font-size: 13px;
+    color: var(--text2); line-height: 1.8; white-space: pre-wrap;
+    font-family: 'Noto Sans TC', monospace; min-height: 80px; margin-top: 12px;
+  }
+
+  /* Custom filler input */
+  .custom-filler-row {
+    display: flex; gap: 8px; margin-top: 10px; align-items: center;
+  }
+  .custom-filler-input {
+    flex: 1; background: var(--input-bg); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--text);
+    font-family: 'Noto Sans TC', sans-serif; font-size: 13px;
+    padding: 6px 10px; outline: none; transition: border-color 0.2s;
+  }
+  .custom-filler-input:focus { border-color: var(--teal); }
+  .filler-save-row {
+    display: flex; gap: 8px; margin-top: 10px; align-items: center; flex-wrap: wrap;
+  }
+  .filler-interviewee-input {
+    flex: 1; min-width: 120px;
+    background: var(--input-bg); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--text);
+    font-family: 'Noto Sans TC', sans-serif; font-size: 13px;
+    padding: 6px 10px; outline: none; transition: border-color 0.2s;
+  }
+  .filler-interviewee-input:focus { border-color: var(--coral); }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- Flash overlay -->
+  <div id="flash-overlay"></div>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-logo">
+      <div class="logo-icon">🎯</div>
+      <span class="logo-text">面試模擬回饋賽</span>
+    </div>
+    <nav class="header-nav">
+      <button class="nav-btn active" onclick="showPage('setup')">名單設置</button>
+      <button class="nav-btn" onclick="showPage('groups')">分組結果</button>
+      <button class="nav-btn" onclick="showPage('timer')">計時器</button>
+      <button class="nav-btn" onclick="showPage('guide')">觀察清單</button>
+
+    </nav>
+    <div class="header-right">
+      <button class="icon-btn" id="theme-btn" onclick="toggleTheme()" title="深色/淺色主題">🌙</button>
+      <button class="icon-btn" onclick="enterFullscreen()" title="全螢幕計時器">⛶</button>
+    </div>
+  </header>
+
+  <!-- ═══ PAGE: SETUP ═══ -->
+  <div class="page active" id="page-setup">
+    <div class="section-label">Step 01</div>
+    <h1 class="section-title">匯入名單 &amp; 分組設置</h1>
+    <p class="section-sub">貼上學生姓名或座號，一行一位或以逗號分隔，再設定組別與人數即可隨機分組。</p>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">📋 匯入名單</div>
+        <textarea class="import-area" id="name-input" placeholder="請輸入學生姓名或座號，支援格式：
+• 一行一位（按 Enter 換行）
+• 逗號分隔：01,02,03...
+• 混合：王小明, 陳大華
+         李美玲"></textarea>
+        <div class="flex-row mt-2">
+          <div id="member-count-badge">
+            <span>👥</span><span id="member-count">0</span> 位成員
+          </div>
+          <div class="spacer"></div>
+          <button class="btn btn-ghost btn-sm" onclick="clearAll()">清除</button>
+          <button class="btn btn-ghost btn-sm" onclick="loadSample()">載入範例</button>
+        </div>
+
+        <!-- Absent member management -->
+        <div id="absent-section" style="display:none;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin:12px 0 8px;">
+            <span style="font-size:12px;font-weight:700;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;">管理缺席成員（點 × 暫時移除）</span>
+            <button class="btn btn-ghost btn-sm" onclick="restoreAllAbsent()" style="font-size:11px;padding:4px 10px;">還原全部</button>
+          </div>
+          <div class="member-manage-area" id="member-chips"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">⚙️ 分組設定</div>
+        <div class="input-row">
+          <span class="input-label">分組方式</span>
+          <select id="group-mode" onchange="updateGroupMode()" style="background:var(--input-bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Noto Sans TC',sans-serif;font-size:14px;padding:7px 12px;outline:none;cursor:pointer;">
+            <option value="byCount">指定每組人數</option>
+            <option value="byGroups">指定組別數量</option>
+          </select>
+        </div>
+        <div id="setting-byCount">
+          <div class="input-row">
+            <span class="input-label">每組人數</span>
+            <input type="number" class="num-input" id="per-group" value="5" min="2" max="20" oninput="calcGroups()">
+            <span class="input-hint">人（建議5人一組）</span>
+          </div>
+          <div id="calc-result" class="input-hint mt-2" style="color:var(--teal);"></div>
+        </div>
+        <div id="setting-byGroups" style="display:none">
+          <div class="input-row">
+            <span class="input-label">組別數量</span>
+            <input type="number" class="num-input" id="num-groups-input" value="4" min="1" max="30" oninput="calcGroups2()">
+            <span class="input-hint">組</span>
+          </div>
+          <div id="calc-result2" class="input-hint mt-2" style="color:var(--teal);"></div>
+        </div>
+        <div class="divider"></div>
+        <div class="input-row">
+          <span class="input-label">面試者角色</span>
+          <span class="input-hint">每組第 1 位成員 = 面試者，其餘為主考官</span>
+        </div>
+        <div class="mt-4">
+          <button class="btn btn-amber btn-lg" onclick="randomAssign()" style="width:100%">
+            🎲 隨機分組
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ PAGE: GROUPS ═══ -->
+  <div class="page" id="page-groups">
+    <div class="flex-row">
+      <div>
+        <div class="section-label">Step 02</div>
+        <h1 class="section-title">分組結果</h1>
+        <p class="section-sub">可拖曳組員手動調整分組，完成後點「開始計時」進入遊戲。</p>
+      </div>
+    </div>
+    <div class="flex-row mt-2" style="margin-bottom:20px;">
+      <div id="groups-summary" class="status-bar" style="flex:1;margin-bottom:0;">
+        <div class="status-item"><div class="status-dot"></div><span id="sum-total">0 位成員</span></div>
+        <div class="status-item"><div class="status-dot amber"></div><span id="sum-groups">0 組</span></div>
+        <div class="status-item"><div class="status-dot coral"></div><span id="sum-per">每組 0 人</span></div>
+      </div>
+      <button class="btn btn-ghost" onclick="randomAssign()">🔀 重新分組</button>
+      <button class="btn btn-ghost" onclick="printGroups()">🖨️ 列印/匯出</button>
+      <button class="btn btn-primary" onclick="showPage('timer')">▶ 開始計時</button>
+    </div>
+    <div class="groups-grid" id="groups-grid"></div>
+    <div id="no-groups" style="text-align:center;padding:60px 20px;color:var(--text3);">
+      <div style="font-size:42px;margin-bottom:12px;">🎯</div>
+      <div style="font-size:16px;margin-bottom:6px;">尚未分組</div>
+      <div style="font-size:13px;">請先到「名單設置」匯入學生並進行分組</div>
+    </div>
+  </div>
+
+  <!-- ═══ PAGE: TIMER ═══ -->
+  <div class="page" id="page-timer">
+    <div class="section-label">Step 03</div>
+    <h1 class="section-title">計時器</h1>
+    <p class="section-sub">三個遊戲階段各有獨立倒數計時，時間快到時會發出提醒音效並閃紅光。</p>
+
+    <div class="phase-tabs">
+      <button class="phase-tab active" onclick="selectPhase(1)">
+        <div class="phase-dot"></div>第一階段：實戰模擬
+      </button>
+      <button class="phase-tab" onclick="selectPhase(2)">
+        <div class="phase-dot"></div>第二階段：背對回饋
+      </button>
+      <button class="phase-tab" onclick="selectPhase(3)">
+        <div class="phase-dot"></div>第三階段：轉身對話
+      </button>
+    </div>
+
+    <div class="timer-layout">
+      <!-- Main timer -->
+      <div class="card timer-main">
+        <div class="phase-info-badge">
+          <div class="phase-num-dot"></div>
+          <span id="timer-phase-name">第一階段：實戰模擬</span>
+        </div>
+
+        <div class="timer-face" id="timer-face-main">
+          <svg class="timer-svg" viewBox="0 0 260 260">
+            <circle class="timer-circle-bg" cx="130" cy="130" r="115"></circle>
+            <circle class="timer-circle-prog" id="timer-prog" cx="130" cy="130" r="115"
+              stroke-dasharray="722.6" stroke-dashoffset="0"></circle>
+          </svg>
+          <div class="timer-digits">
+            <div class="timer-time" id="timer-display">02:00</div>
+            <div class="timer-label-sm" id="timer-status-text">準備開始</div>
+          </div>
+        </div>
+
+        <div class="timer-controls">
+          <button class="btn btn-primary btn-lg" id="btn-start" onclick="startTimer()">▶ 開始</button>
+          <button class="btn btn-ghost btn-lg" id="btn-pause" onclick="pauseTimer()" style="display:none">⏸ 暫停</button>
+          <button class="btn btn-ghost btn-lg" id="btn-resume" onclick="resumeTimer()" style="display:none">▶ 繼續</button>
+          <button class="btn btn-coral btn-lg" id="btn-reset" onclick="resetTimer()">↺ 重設</button>
+        </div>
+
+        <div id="timer-finished-msg" style="display:none;font-size:16px;font-weight:700;color:var(--amber);text-align:center;animation:pulse 1s infinite;">
+          ⏰ 時間到！請進入下一階段
+        </div>
+
+        <!-- Auto-advance -->
+        <div class="auto-advance-bar" id="auto-advance-bar">
+          <label class="toggle-switch">
+            <input type="checkbox" id="auto-advance-toggle" onchange="toggleAutoAdvance()">
+            <span class="toggle-slider"></span>
+          </label>
+          <span>自動進入下一階段</span>
+          <span style="color:var(--text3);font-size:12px;">緩衝</span>
+          <button class="step-btn" onclick="adjustAutoDelay(-1)">−</button>
+          <span id="auto-delay-display" style="font-size:13px;font-weight:700;color:var(--text);min-width:28px;text-align:center;">5秒</span>
+          <button class="step-btn" onclick="adjustAutoDelay(1)">+</button>
+          <div id="auto-countdown-text" style="font-size:12px;margin-left:4px;"></div>
+        </div>
+      </div>
+
+      <!-- Right panel -->
+      <div style="min-width:280px;">
+        <div class="card">
+          <div class="card-title">⏱ 計時設定</div>
+          <div class="settings-row">
+            <span class="settings-label">計時時間</span>
+            <div class="settings-value">
+              <button class="step-btn" onclick="adjustTime(-30)">−</button>
+              <span id="set-time-display">2分00秒</span>
+              <button class="step-btn" onclick="adjustTime(30)">+</button>
+            </div>
+          </div>
+          <div class="settings-row">
+            <span class="settings-label">提醒時間（剩餘）</span>
+            <div class="settings-value">
+              <button class="step-btn" onclick="adjustWarning(-10)">−</button>
+              <span id="set-warn-display">30秒</span>
+              <button class="step-btn" onclick="adjustWarning(10)">+</button>
+            </div>
+          </div>
+          <div class="settings-row" style="margin-bottom:0;">
+            <span class="settings-label">音效提醒</span>
+            <div class="settings-value">
+              <button class="step-btn" id="mute-btn" onclick="toggleMute()" title="開/關音效">🔔</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="phase-desc-card mt-4" id="phase-desc">
+          <div class="phase-desc-title" id="phase-desc-title">🎤 第一階段：實戰模擬</div>
+          <ul class="phase-desc-list" id="phase-desc-list">
+            <li>面試者面對 4 位主考官進行自我介紹</li>
+            <li>回答經典面試題（如：為什麼我們該錄取你？）</li>
+            <li>主考官觀察眼神、自信度、邏輯與內容</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- All groups roles panel -->
+    <div id="timer-all-groups" style="display:none; margin-top:28px;">
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:2.5px;color:var(--teal);text-transform:uppercase;">👥 各組角色分配</div>
+        <div id="rotation-badge" style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,201,71,0.1);border:1px solid rgba(255,201,71,0.3);border-radius:20px;padding:4px 14px;font-size:12px;color:var(--amber);font-weight:700;"></div>
+        <div style="flex:1;"></div>
+        <button class="btn btn-amber" id="btn-next-interviewee" onclick="confirmNextInterviewee()">
+          👤 換下一位面試者
+        </button>
+        <button class="btn btn-ghost btn-sm" onclick="resetRotation()">↺ 重頭開始</button>
+      </div>
+      <div id="timer-all-groups-grid" class="timer-groups-grid"></div>
+      <div id="rotation-done-msg" style="display:none;text-align:center;padding:22px;font-size:15px;font-weight:700;color:var(--teal);background:rgba(0,201,177,0.06);border:1px solid var(--border);border-radius:var(--radius);margin-top:12px;">
+        🎉 所有人都已完成面試！
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ PAGE: GUIDE ═══ -->
+  <div class="page" id="page-guide">
+    <div class="section-label">教學補充</div>
+    <h1 class="section-title">給老師的三個小技巧</h1>
+    <p class="section-sub">可在活動前帶著學生一起閱讀，讓回饋品質更有深度。</p>
+
+    <div class="grid-3" style="align-items:start;">
+
+      <!-- 技巧 01：三明治回饋法 -->
+      <div class="card" style="border-top:3px solid var(--teal);">
+        <div style="font-size:10px;font-weight:700;letter-spacing:2px;color:var(--text3);text-transform:uppercase;margin-bottom:6px;">技巧 01・評論公式</div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+          <span style="font-size:26px;">🥪</span>
+          <div style="font-size:17px;font-weight:900;color:var(--text);">三明治回饋法</div>
+        </div>
+        <p style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:14px;">學生有時因害羞只說「我覺得很好啊」，導致回饋流於表面。規定主考官必須依以下結構給出意見，避免無效社交。</p>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:rgba(33,150,201,0.07);border:1px solid rgba(33,150,201,0.2);border-radius:9px;">
+            <span style="font-size:16px;flex-shrink:0;">👍</span>
+            <div>
+              <div style="font-size:11px;font-weight:700;color:var(--teal);letter-spacing:1px;text-transform:uppercase;margin-bottom:2px;">優點</div>
+              <div style="font-size:13px;color:var(--text2);line-height:1.55;">說一個具體觀察到的光點</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:rgba(217,64,64,0.06);border:1px solid rgba(217,64,64,0.18);border-radius:9px;">
+            <span style="font-size:16px;flex-shrink:0;">🎯</span>
+            <div>
+              <div style="font-size:11px;font-weight:700;color:var(--coral);letter-spacing:1px;text-transform:uppercase;margin-bottom:2px;">具體改進點</div>
+              <div style="font-size:13px;color:var(--text2);line-height:1.55;">說一個可以立即改善的行為</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:rgba(224,123,0,0.07);border:1px solid rgba(224,123,0,0.2);border-radius:9px;">
+            <span style="font-size:16px;flex-shrink:0;">💪</span>
+            <div>
+              <div style="font-size:11px;font-weight:700;color:var(--amber);letter-spacing:1px;text-transform:uppercase;margin-bottom:2px;">鼓勵</div>
+              <div style="font-size:13px;color:var(--text2);line-height:1.55;">以正向語氣收尾，填強信心</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 技巧 02：雜訊干擾觀察 -->
+      <div class="card" style="border-top:3px solid var(--amber);">
+        <div style="font-size:10px;font-weight:700;letter-spacing:2px;color:var(--text3);text-transform:uppercase;margin-bottom:6px;">技巧 02・第二階段加分題</div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+          <span style="font-size:26px;">🔍</span>
+          <div style="font-size:17px;font-weight:900;color:var(--text);">雜訊干擾觀察</div>
+        </div>
+        <p style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:14px;">在第二階段討論時，請主考官額外討論：「<strong style="color:var(--text);">他的內容有沒有哪題起來很卡？</strong>」</p>
+        <p style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:12px;">幫助面試者發現自己句中多餘的贅詞，例如：</p>
+        <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px;">
+          <span style="padding:5px 12px;background:rgba(224,123,0,0.1);border:1px solid rgba(224,123,0,0.3);border-radius:20px;font-size:13px;font-weight:700;color:var(--amber);">然後…</span>
+          <span style="padding:5px 12px;background:rgba(224,123,0,0.1);border:1px solid rgba(224,123,0,0.3);border-radius:20px;font-size:13px;font-weight:700;color:var(--amber);">那個…</span>
+          <span style="padding:5px 12px;background:rgba(224,123,0,0.1);border:1px solid rgba(224,123,0,0.3);border-radius:20px;font-size:13px;font-weight:700;color:var(--amber);">呃…</span>
+          <span style="padding:5px 12px;background:rgba(224,123,0,0.1);border:1px solid rgba(224,123,0,0.3);border-radius:20px;font-size:13px;font-weight:700;color:var(--amber);">就是…</span>
+          <span style="padding:5px 12px;background:rgba(224,123,0,0.1);border:1px solid rgba(224,123,0,0.3);border-radius:20px;font-size:13px;font-weight:700;color:var(--amber);">嗯…</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:9px;padding:11px 13px;background:rgba(255,201,71,0.07);border:1px solid rgba(255,201,71,0.2);border-radius:9px;">
+          <span style="font-size:14px;flex-shrink:0;margin-top:1px;">💡</span>
+          <div style="font-size:13px;color:var(--text2);line-height:1.6;">可以請主考官手手計數，面試者說了幾次贅詞，後後分享數字，往往讓本人非常驚訝。</div>
+        </div>
+      </div>
+
+      <!-- 技巧 03：為什麼要練習背對背 -->
+      <div class="card" style="border-top:3px solid var(--coral);">
+        <div style="font-size:10px;font-weight:700;letter-spacing:2px;color:var(--text3);text-transform:uppercase;margin-bottom:6px;">技巧 03・設計理念</div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+          <span style="font-size:26px;">🔄</span>
+          <div style="font-size:17px;font-weight:900;color:var(--text);">為什麼要練習背對背？</div>
+        </div>
+        <p style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:14px;">在面試練習中，學生往往太在意「我要說什麼」，而忽了「別人在聽什麼」。</p>
+        <div style="padding:12px 14px;background:rgba(33,150,201,0.07);border:1px solid rgba(33,150,201,0.2);border-radius:9px;margin-bottom:14px;">
+          <div style="font-size:11px;font-weight:700;color:var(--teal);letter-spacing:1px;margin-bottom:6px;">背對的意義</div>
+          <div style="font-size:13px;color:var(--text2);line-height:1.6;">讓面試者從「<strong style="color:var(--teal);">主角</strong>」變成「<strong style="color:var(--teal);">旁觀者</strong>」，用第三人稱的角度來審視自己的表現。</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:7px;">
+          <div style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--text2);line-height:1.55;">
+            <span style="color:var(--coral);flex-shrink:0;font-weight:700;">●</span>
+            <span>聽到主考官的討論，卻無法馬上辯解，訓練「接受反饋」的能力</span>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--text2);line-height:1.55;">
+            <span style="color:var(--coral);flex-shrink:0;font-weight:700;">●</span>
+            <span>返回頭更真實，主考官說話不必顧慮面試者的表情</span>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--text2);line-height:1.55;">
+            <span style="color:var(--coral);flex-shrink:0;font-weight:700;">●</span>
+            <span>轉身後的「意外感」往往是最深刻的學習時刻</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bottom: observation questions -->
+    <div style="margin-top:24px;">
+      <div style="font-size:11px;font-weight:700;letter-spacing:2.5px;color:var(--teal);text-transform:uppercase;margin-bottom:14px;">📋 第二階段・主考官觀察引導問題</div>
+      <div class="grid-2" style="align-items:start;gap:12px;">
+        <div style="display:flex;gap:14px;align-items:flex-start;padding:14px 16px;background:var(--card);border:1px solid var(--border2);border-radius:var(--radius);">
+          <div style="width:26px;height:26px;border-radius:50%;background:rgba(33,150,201,0.12);border:1px solid rgba(33,150,201,0.3);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--teal);flex-shrink:0;">1</div>
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px;">第一印象</div>
+            <div style="font-size:13px;color:var(--text2);line-height:1.6;">剛才聽完後，你會想錄取他嗎？為什麼？用一個形容詞形容剛才的感受。</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:14px;align-items:flex-start;padding:14px 16px;background:var(--card);border:1px solid var(--border2);border-radius:var(--radius);">
+          <div style="width:26px;height:26px;border-radius:50%;background:rgba(33,150,201,0.12);border:1px solid rgba(33,150,201,0.3);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--teal);flex-shrink:0;">2</div>
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px;">非語言訊息</div>
+            <div style="font-size:13px;color:var(--text2);line-height:1.6;">他的眼神有閃躲嗎？手勢會不會太多？站姿是否穩定有自信？</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:14px;align-items:flex-start;padding:14px 16px;background:var(--card);border:1px solid var(--border2);border-radius:var(--radius);">
+          <div style="width:26px;height:26px;border-radius:50%;background:rgba(33,150,201,0.12);border:1px solid rgba(33,150,201,0.3);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--teal);flex-shrink:0;">3</div>
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px;">內容記憶點</div>
+            <div style="font-size:13px;color:var(--text2);line-height:1.6;">剛才那段話，你現在還記得哪一個關鍵字？能說出最有力的一句話嗎？</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:14px;align-items:flex-start;padding:14px 16px;background:var(--card);border:1px solid var(--border2);border-radius:var(--radius);">
+          <div style="width:26px;height:26px;border-radius:50%;background:rgba(33,150,201,0.12);border:1px solid rgba(33,150,201,0.3);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--teal);flex-shrink:0;">4</div>
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px;">改進建議</div>
+            <div style="font-size:13px;color:var(--text2);line-height:1.6;">如果他要更有說服力，應該多加點什麼？哪個部分可以說得更清楚？</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- TOAST -->
+  <div id="toast"></div>
+
+  <!-- CONFIRM MODAL -->
+  <div class="modal-backdrop" id="confirm-modal">
+    <div class="modal">
+      <div class="modal-icon" id="modal-icon">⚠️</div>
+      <div class="modal-title" id="modal-title">確認操作</div>
+      <div class="modal-msg" id="modal-msg">確定要執行此操作嗎？</div>
+      <div class="modal-btns">
+        <button class="btn btn-ghost" onclick="closeModal()">取消</button>
+        <button class="btn btn-amber" id="modal-confirm-btn" onclick="modalConfirmAction()">確認</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="fs-esc-hint" id="fs-esc-hint" style="display:none;">按 ESC 關閉全螢幕</div>
+
+  <!-- FULLSCREEN OVERLAY -->
+  <div class="fullscreen-overlay" id="fullscreen-overlay">
+    <!-- Phase tabs row -->
+    <div style="display:flex;gap:0;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:4px;margin-bottom:20px;">
+      <button class="phase-tab active" id="fs-phase-tab-1" onclick="selectPhase(1)" style="font-size:13px;padding:8px 18px;">
+        <div class="phase-dot"></div>第一階段：實戰模擬
+      </button>
+      <button class="phase-tab" id="fs-phase-tab-2" onclick="selectPhase(2)" style="font-size:13px;padding:8px 18px;">
+        <div class="phase-dot"></div>第二階段：背對回饋
+      </button>
+      <button class="phase-tab" id="fs-phase-tab-3" onclick="selectPhase(3)" style="font-size:13px;padding:8px 18px;">
+        <div class="phase-dot"></div>第三階段：轉身對話
+      </button>
+    </div>
+
+    <div class="fs-phase-name" id="fs-phase-name">第一階段：實戰模擬</div>
+    <div class="fs-timer-face" id="fs-timer-face">
+      <svg class="timer-svg" viewBox="0 0 260 260">
+        <circle class="timer-circle-bg" cx="130" cy="130" r="115"></circle>
+        <circle class="timer-circle-prog" id="fs-timer-prog" cx="130" cy="130" r="115"
+          stroke-dasharray="722.6" stroke-dashoffset="0"></circle>
+      </svg>
+      <div class="timer-digits">
+        <div class="fs-timer-time timer-time" id="fs-timer-display">02:00</div>
+        <div class="fs-status" id="fs-status">準備開始</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">
+      <button class="btn btn-primary btn-lg" id="fs-btn-start" onclick="startTimer()">▶ 開始</button>
+      <button class="btn btn-ghost btn-lg" id="fs-btn-pause" onclick="pauseTimer()" style="display:none">⏸ 暫停</button>
+      <button class="btn btn-ghost btn-lg" id="fs-btn-resume" onclick="resumeTimer()" style="display:none">▶ 繼續</button>
+      <button class="btn btn-coral btn-lg" onclick="resetTimer()">↺ 重設</button>
+    </div>
+    <div id="fs-finished" style="display:none;font-size:18px;font-weight:700;color:var(--amber);text-align:center;margin-top:18px;animation:pulse 1s infinite;">
+      ⏰ 時間到！
+    </div>
+
+    <!-- Groups panel inside fullscreen -->
+    <div id="fs-groups-panel" style="margin-top:24px;width:100%;max-width:860px;padding:0 16px;">
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:12px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:var(--teal);text-transform:uppercase;">👥 各組角色分配</div>
+        <div id="fs-rotation-badge" style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,201,71,0.1);border:1px solid rgba(255,201,71,0.3);border-radius:20px;padding:3px 12px;font-size:12px;color:var(--amber);font-weight:700;"></div>
+        <div style="flex:1;"></div>
+        <button class="btn btn-amber btn-sm" onclick="confirmNextInterviewee()">👤 換下一位面試者</button>
+      </div>
+      <div id="fs-groups-grid" class="timer-groups-grid"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ─── STATE ───────────────────────────────────────
+let members = [];
+let absentMembers = new Set();
+let groups = [];
+let currentPhase = 1;
+let currentGroupIndex = 0;
+let currentRotation = 0;
+let timerInterval = null;
+let timerSeconds = 120;
+let totalSeconds = 120;
+let warningSeconds = 30;
+let isMuted = false;
+let timerRunning = false;
+let timerPaused = false;
+let isDarkMode = false;
+let isFullscreen = false;
+let autoAdvanceEnabled = false;
+let autoAdvanceDelay = 5;
+let autoAdvanceCountdown = null;
+let sessionLog = [];
+let pendingModalAction = null;
+
+const phaseDefaults = {
+  1: { time: 120, warning: 30, name: '第一階段：實戰模擬', desc: [
+    '面試者面對 4 位主考官進行自我介紹',
+    '回答經典面試題（如：為什麼我們該錄取你？）',
+    '主考官觀察眼神、自信度、邏輯與內容'
+  ]},
+  2: { time: 240, warning: 30, name: '第二階段：背對回饋', desc: [
+    '面試者說完後，轉身背對大家',
+    '面試者保持安靜，不論聽到什麼都不能解釋或回頭',
+    '4 位主考官依觀察清單旁若無人地討論',
+    '可使用「觀察清單」頁面的問題引導討論'
+  ]},
+  3: { time: 120, warning: 30, name: '第三階段：轉身對話', desc: [
+    '面試者轉回正面',
+    '分享：「我剛剛聽到的討論中，哪一部分最讓我意外？」',
+    '面試者不需要反駁，只是分享感受與收穫'
+  ]}
+};
+
+const phaseSettings = {
+  1: { time: 120, warning: 30 },
+  2: { time: 240, warning: 30 },
+  3: { time: 120, warning: 30 }
+};
+
+// ─── AUDIO ───────────────────────────────────────
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let ctx = null;
+
+function getCtx() {
+  if (!ctx) ctx = new AudioCtx();
+  return ctx;
+}
+
+function beep(freq, dur, vol, type='sine') {
+  if (isMuted) return;
+  try {
+    const ac = getCtx();
+    const o = ac.createOscillator();
+    const g = ac.createGain();
+    o.connect(g); g.connect(ac.destination);
+    o.type = type;
+    o.frequency.setValueAtTime(freq, ac.currentTime);
+    g.gain.setValueAtTime(vol, ac.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + dur);
+    o.start(ac.currentTime);
+    o.stop(ac.currentTime + dur);
+  } catch(e) {}
+}
+
+function playWarningSound() {
+  beep(880, 0.15, 0.4);
+  setTimeout(() => beep(880, 0.15, 0.4), 200);
+  setTimeout(() => beep(1100, 0.25, 0.5), 450);
+}
+
+function playFinishSound() {
+  beep(523, 0.2, 0.5);
+  setTimeout(() => beep(659, 0.2, 0.5), 220);
+  setTimeout(() => beep(784, 0.2, 0.5), 440);
+  setTimeout(() => beep(1047, 0.5, 0.6), 660);
+}
+
+function playTickSound() {
+  beep(440, 0.05, 0.15, 'square');
+}
+
+// ─── THEME ───────────────────────────────────────
+function toggleTheme() {
+  isDarkMode = !isDarkMode;
+  document.body.classList.toggle('dark-mode', isDarkMode);
+  document.getElementById('theme-btn').textContent = isDarkMode ? '☀️' : '🌙';
+  showToast(isDarkMode ? '已切換深色主題' : '已切換淺色主題');
+}
+
+// ─── PAGES ───────────────────────────────────────
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  const btns = document.querySelectorAll('.nav-btn');
+  const map = {setup:0, groups:1, timer:2, guide:3, log:4};
+  if (map[id] !== undefined) btns[map[id]].classList.add('active');
+  if (id === 'timer') renderTimerGroupSelector();
+  if (id === 'log') renderLog();
+}
+
+// ─── SETUP ───────────────────────────────────────
+document.getElementById('name-input').addEventListener('input', function() {
+  parseMembers();
+  calcGroups();
+});
+
+function parseMembers() {
+  const raw = document.getElementById('name-input').value;
+  const parts = raw.split(/[\n,，、；;]+/).map(s => s.trim()).filter(s => s.length > 0);
+  members = [...new Set(parts)];
+  // Remove newly-entered names from absent set if they weren't there before
+  document.getElementById('member-count').textContent = members.filter(m => !absentMembers.has(m)).length;
+  renderMemberChips();
+  calcGroups();
+  return members;
+}
+
+function getActiveMembers() {
+  return members.filter(m => !absentMembers.has(m));
+}
+
+function renderMemberChips() {
+  const section = document.getElementById('absent-section');
+  const container = document.getElementById('member-chips');
+  if (members.length === 0) { section.style.display = 'none'; return; }
+  section.style.display = '';
+  container.innerHTML = members.map(m => `
+    <span class="member-chip ${absentMembers.has(m) ? 'absent' : ''}" data-name="${m}">
+      ${m}
+      <button class="chip-remove" onclick="toggleAbsent('${m}')" title="${absentMembers.has(m) ? '還原' : '標記缺席'}">
+        ${absentMembers.has(m) ? '↩' : '×'}
+      </button>
+    </span>
+  `).join('');
+}
+
+function toggleAbsent(name) {
+  if (absentMembers.has(name)) {
+    absentMembers.delete(name);
+    showToast(`${name} 已還原`);
+  } else {
+    absentMembers.add(name);
+    showToast(`${name} 已標記缺席`);
+  }
+  const active = getActiveMembers();
+  document.getElementById('member-count').textContent = active.length;
+  renderMemberChips();
+  calcGroups();
+}
+
+function restoreAllAbsent() {
+  absentMembers.clear();
+  document.getElementById('member-count').textContent = members.length;
+  renderMemberChips();
+  calcGroups();
+  showToast('已還原所有缺席成員');
+}
+
+function calcGroups() {
+  if (!document.getElementById('setting-byCount')) return;
+  const per = parseInt(document.getElementById('per-group').value) || 5;
+  const active = getActiveMembers();
+  if (active.length === 0) { document.getElementById('calc-result').textContent = ''; return; }
+  const g = Math.ceil(active.length / per);
+  document.getElementById('calc-result').textContent = `→ 預計分成 ${g} 組（最後一組可能不足 ${per} 人）`;
+}
+
+function calcGroups2() {
+  const n = parseInt(document.getElementById('num-groups-input').value) || 4;
+  const active = getActiveMembers();
+  if (active.length === 0) { document.getElementById('calc-result2').textContent = ''; return; }
+  const per = Math.ceil(active.length / n);
+  document.getElementById('calc-result2').textContent = `→ 每組約 ${per} 人`;
+}
+
+function updateGroupMode() {
+  const mode = document.getElementById('group-mode').value;
+  document.getElementById('setting-byCount').style.display = mode === 'byCount' ? '' : 'none';
+  document.getElementById('setting-byGroups').style.display = mode === 'byGroups' ? '' : 'none';
+}
+
+function loadSample() {
+  const sample = `王小明\n陳大華\n李美玲\n張志偉\n林淑芬\n劉建宏\n黃雅婷\n吳俊傑\n蔡宜珊\n鄭宗翰\n許雅雯\n江明哲\n林思穎\n謝宏達\n洪雅婷\n邱柏翔\n蘇雅惠\n游岳霖\n廖冠廷\n賴宛蓉`;
+  document.getElementById('name-input').value = sample;
+  parseMembers();
+  showToast('已載入20位範例學生');
+}
+
+function clearAll() {
+  document.getElementById('name-input').value = '';
+  members = [];
+  absentMembers.clear();
+  document.getElementById('member-count').textContent = '0';
+  document.getElementById('calc-result').textContent = '';
+  document.getElementById('absent-section').style.display = 'none';
+}
+
+function randomAssign() {
+  parseMembers();
+  const active = getActiveMembers();
+  if (active.length < 2) { showToast('請先輸入至少2位成員！'); showPage('setup'); return; }
+
+  const mode = document.getElementById('group-mode').value;
+  let numGroups;
+  if (mode === 'byCount') {
+    const per = parseInt(document.getElementById('per-group').value) || 5;
+    numGroups = Math.ceil(active.length / per);
+  } else {
+    numGroups = parseInt(document.getElementById('num-groups-input').value) || 4;
+  }
+  numGroups = Math.max(1, Math.min(numGroups, active.length));
+
+  const shuffled = [...active].sort(() => Math.random() - 0.5);
+  groups = [];
+  for (let i = 0; i < numGroups; i++) groups.push([]);
+  shuffled.forEach((m, i) => groups[i % numGroups].push(m));
+
+  currentRotation = 0;
+  renderGroups();
+  renderTimerGroupSelector();
+  showPage('groups');
+  showToast(`已分成 ${numGroups} 組！`);
+  addLog('分組', `${active.length} 人分為 ${numGroups} 組`);
+}
+
+// ─── GROUPS ──────────────────────────────────────
+function renderGroups() {
+  const grid = document.getElementById('groups-grid');
+  const noGroups = document.getElementById('no-groups');
+  const summary = document.getElementById('groups-summary');
+
+  if (groups.length === 0) {
+    grid.style.display = 'none'; noGroups.style.display = 'block'; summary.style.display = 'none';
+    return;
+  }
+
+  grid.style.display = 'grid'; noGroups.style.display = 'none'; summary.style.display = 'flex';
+  const total = groups.reduce((s, g) => s + g.length, 0);
+  const avg = total > 0 ? (total / groups.length).toFixed(1) : 0;
+  document.getElementById('sum-total').textContent = `${total} 位成員`;
+  document.getElementById('sum-groups').textContent = `${groups.length} 組`;
+  document.getElementById('sum-per').textContent = `每組約 ${avg} 人`;
+
+  grid.innerHTML = '';
+  groups.forEach((grp, gi) => {
+    const card = document.createElement('div');
+    card.className = 'group-card fade-in';
+    card.dataset.groupIndex = gi;
+    card.ondragover = e => { e.preventDefault(); card.classList.add('drag-over'); };
+    card.ondragleave = () => card.classList.remove('drag-over');
+    card.ondrop = e => { e.preventDefault(); card.classList.remove('drag-over'); handleDrop(e, gi); };
+
+    card.innerHTML = `
+      <div class="group-header">
+        <span class="group-name-text">第 ${gi+1} 組</span>
+        <span class="group-count">${grp.length} 人</span>
+      </div>
+      <div class="group-body">
+        <div class="group-roles">
+          ${grp.map((name, idx) => `
+            <div class="role-row" draggable="true" data-group="${gi}" data-idx="${idx}"
+              ondragstart="handleDragStart(event, ${gi}, ${idx})">
+              <span class="role-badge ${idx === 0 ? 'host' : 'judge'}">${idx === 0 ? '面試者' : '主考官'}</span>
+              <span class="role-name">${name}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+
+let dragSource = null;
+
+function handleDragStart(e, groupIdx, memberIdx) {
+  dragSource = { groupIdx, memberIdx };
+  e.dataTransfer.effectAllowed = 'move';
+}
+
+function handleDrop(e, targetGroupIdx) {
+  if (!dragSource) return;
+  const { groupIdx: srcG, memberIdx: srcI } = dragSource;
+  if (srcG === targetGroupIdx) return;
+  const name = groups[srcG].splice(srcI, 1)[0];
+  groups[targetGroupIdx].push(name);
+  // Remove empty groups
+  groups = groups.filter(g => g.length > 0);
+  dragSource = null;
+  renderGroups();
+  showToast(`${name} 已移至第 ${targetGroupIdx + 1} 組`);
+}
+
+function printGroups() {
+  window.print();
+}
+
+// ─── TIMER GROUP PANEL ───────────────────────────
+function renderTimerGroupSelector() {
+  const container = document.getElementById('timer-all-groups');
+  const grid = document.getElementById('timer-all-groups-grid');
+  if (!groups.length) { container.style.display = 'none'; return; }
+
+  container.style.display = '';
+  const maxRounds = Math.max(...groups.map(g => g.length));
+  const allDone = currentRotation >= maxRounds;
+
+  document.getElementById('rotation-badge').textContent =
+    allDone ? '全員完成 🎉' : `第 ${currentRotation + 1} 輪 ／ 共 ${maxRounds} 輪`;
+
+  const btn = document.getElementById('btn-next-interviewee');
+  btn.disabled = allDone;
+  btn.style.opacity = allDone ? '0.4' : '1';
+  btn.style.cursor = allDone ? 'not-allowed' : 'pointer';
+
+  document.getElementById('rotation-done-msg').style.display = allDone ? '' : 'none';
+
+  if (allDone) { grid.innerHTML = ''; return; }
+
+  grid.innerHTML = groups.map((grp, gi) => {
+    const intervieweeIdx = currentRotation % grp.length;
+    const interviewee = grp[intervieweeIdx];
+    const judges = grp.filter((_, i) => i !== intervieweeIdx);
+    const doneNames = new Set(
+      Array.from({ length: currentRotation }, (_, r) => grp[r % grp.length])
+    );
+    return `
+      <div class="timer-group-card">
+        <div class="timer-group-card-header">
+          <span class="timer-group-card-title">第 ${gi + 1} 組</span>
+          <span class="timer-group-card-count">${grp.length} 人</span>
+        </div>
+        <div class="timer-group-card-body">
+          <div class="timer-role-row interviewee">
+            <span class="role-badge host">面試者</span>
+            <span class="timer-role-name">${interviewee}</span>
+          </div>
+          ${judges.map(name => {
+            const done = doneNames.has(name);
+            return `<div class="timer-role-row" style="${done ? 'opacity:0.45;' : ''}">
+              <span class="role-badge judge">主考官</span>
+              <span class="timer-role-name">${name}${done ? ' ✓' : ''}</span>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ─── CONFIRM NEXT INTERVIEWEE ─────────────────────
+function confirmNextInterviewee() {
+  if (!groups.length) { showToast('尚未分組'); return; }
+  const maxRounds = Math.max(...groups.map(g => g.length));
+  if (currentRotation >= maxRounds) {
+    showToast('所有人都已完成面試！');
+    return;
+  }
+  showModal('👤', '換下一位面試者', '確定要切換到下一位面試者嗎？目前的計時將會重設。', nextInterviewee);
+}
+
+function nextInterviewee() {
+  const maxRounds = Math.max(...groups.map(g => g.length));
+  // Log who just finished
+  groups.forEach((grp, gi) => {
+    const prevIntervieweeIdx = currentRotation % grp.length;
+    const name = grp[prevIntervieweeIdx];
+    addLog('面試完成', `第 ${gi+1} 組 ${name} 完成面試（第 ${currentRotation + 1} 輪）`);
+  });
+  currentRotation++;
+  resetTimer();
+  selectPhase(1);
+  renderTimerGroupSelector();
+  renderFsGroups();
+  if (currentRotation >= maxRounds) {
+    showToast('🎉 所有人都已完成面試！');
+  } else {
+    showToast(`第 ${currentRotation + 1} 輪開始！`);
+  }
+}
+
+function resetRotation() {
+  currentRotation = 0;
+  resetTimer();
+  selectPhase(1);
+  renderTimerGroupSelector();
+  showToast('已重頭開始');
+}
+
+// ─── TIMER ───────────────────────────────────────
+let warnPlayed = false;
+
+function selectPhase(ph) {
+  currentPhase = ph;
+  resetTimer();
+  document.querySelectorAll('.phase-tab').forEach((t,i) => t.classList.toggle('active', i+1 === ph));
+
+  const d = phaseDefaults[ph];
+  document.getElementById('timer-phase-name').textContent = d.name;
+  document.getElementById('phase-desc-title').textContent = ['🎤 ','👂 ','💬 '][ph-1] + d.name;
+  document.getElementById('phase-desc-list').innerHTML = d.desc.map(s => `<li>${s}</li>`).join('');
+  document.getElementById('fs-phase-name').textContent = d.name;
+
+  timerSeconds = phaseSettings[ph].time;
+  totalSeconds = timerSeconds;
+  warningSeconds = phaseSettings[ph].warning;
+  updateTimerDisplay();
+  updateSettingsDisplay();
+  renderFsGroups();
+}
+
+function startTimer() {
+  if (timerRunning) return;
+  try { getCtx().resume(); } catch(e) {}
+
+  timerRunning = true;
+  timerPaused = false;
+  warnPlayed = false;
+
+  setBtn('btn-start', 'none'); setBtn('btn-pause', ''); setBtn('btn-resume', 'none');
+  setBtn('fs-btn-start', 'none'); setBtn('fs-btn-pause', ''); setBtn('fs-btn-resume', 'none');
+  document.getElementById('timer-finished-msg').style.display = 'none';
+  document.getElementById('fs-finished').style.display = 'none';
+  document.getElementById('timer-status-text').textContent = '進行中...';
+  document.getElementById('fs-status').textContent = '進行中...';
+  timerInterval = setInterval(tick, 1000);
+
+  addLog('計時開始', phaseDefaults[currentPhase].name);
+}
+
+function pauseTimer() {
+  clearInterval(timerInterval);
+  timerRunning = false; timerPaused = true;
+  setBtn('btn-pause', 'none'); setBtn('btn-resume', '');
+  setBtn('fs-btn-pause', 'none'); setBtn('fs-btn-resume', '');
+  document.getElementById('timer-status-text').textContent = '已暫停';
+  document.getElementById('fs-status').textContent = '已暫停';
+}
+
+function resumeTimer() {
+  timerRunning = true; timerPaused = false;
+  setBtn('btn-pause', ''); setBtn('btn-resume', 'none');
+  setBtn('fs-btn-pause', ''); setBtn('fs-btn-resume', 'none');
+  document.getElementById('timer-status-text').textContent = '進行中...';
+  document.getElementById('fs-status').textContent = '進行中...';
+  timerInterval = setInterval(tick, 1000);
+}
+
+function resetTimer() {
+  clearInterval(timerInterval);
+  clearAutoAdvanceCountdown();
+  timerRunning = false; timerPaused = false; warnPlayed = false;
+  timerSeconds = phaseSettings[currentPhase].time;
+  totalSeconds = timerSeconds;
+
+  setBtn('btn-start', ''); setBtn('btn-pause', 'none'); setBtn('btn-resume', 'none');
+  setBtn('fs-btn-start', ''); setBtn('fs-btn-pause', 'none'); setBtn('fs-btn-resume', 'none');
+  document.getElementById('timer-finished-msg').style.display = 'none';
+  document.getElementById('fs-finished').style.display = 'none';
+  document.getElementById('timer-status-text').textContent = '準備開始';
+  document.getElementById('fs-status').textContent = '準備開始';
+
+  const tDisplay = document.getElementById('timer-display');
+  tDisplay.className = 'timer-time';
+  updateTimerDisplay();
+}
+
+function setBtn(id, disp) {
+  const el = document.getElementById(id);
+  if (el) el.style.display = disp;
+}
+
+function tick() {
+  timerSeconds--;
+  updateTimerDisplay();
+
+  if (timerSeconds === warningSeconds && !warnPlayed) {
+    warnPlayed = true;
+    playWarningSound();
+    showToast(`⚠️ 還剩 ${warningSeconds} 秒！`);
+  }
+
+  if (timerSeconds <= 10 && timerSeconds > 0) {
+    playTickSound();
+  }
+
+  if (timerSeconds <= 0) {
+    clearInterval(timerInterval);
+    timerRunning = false;
+    timerSeconds = 0;
+    playFinishSound();
+    triggerFinishFlash();
+    document.getElementById('timer-finished-msg').style.display = 'block';
+    document.getElementById('fs-finished').style.display = 'block';
+    setBtn('btn-pause', 'none'); setBtn('btn-start', 'none');
+    setBtn('fs-btn-pause', 'none'); setBtn('fs-btn-start', 'none');
+    document.getElementById('timer-status-text').textContent = '時間到！';
+    document.getElementById('fs-status').textContent = '時間到！';
+    showToast('⏰ 時間到！');
+    addLog('計時結束', phaseDefaults[currentPhase].name);
+
+    if (autoAdvanceEnabled && currentPhase < 3) {
+      startAutoAdvanceCountdown();
+    }
+  }
+}
+
+function triggerFinishFlash() {
+  // Screen flash
+  const overlay = document.getElementById('flash-overlay');
+  overlay.classList.remove('active');
+  void overlay.offsetWidth;
+  overlay.classList.add('active');
+  setTimeout(() => overlay.classList.remove('active'), 1300);
+
+  // Timer face flash
+  const face = document.getElementById('timer-face-main');
+  face.classList.remove('flash-red');
+  void face.offsetWidth;
+  face.classList.add('flash-red');
+  setTimeout(() => face.classList.remove('flash-red'), 500);
+
+  if (isFullscreen) {
+    const fsFace = document.getElementById('fs-timer-face');
+    fsFace.classList.remove('flash-red');
+    void fsFace.offsetWidth;
+    fsFace.classList.add('flash-red');
+    setTimeout(() => fsFace.classList.remove('flash-red'), 500);
+  }
+}
+
+function updateTimerDisplay() {
+  const m = Math.floor(timerSeconds / 60);
+  const s = timerSeconds % 60;
+  const str = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+
+  document.getElementById('timer-display').textContent = str;
+  document.getElementById('fs-timer-display').textContent = str;
+
+  // Color class
+  let cls = 'timer-time';
+  if (timerSeconds <= 10) {
+    cls = 'timer-time danger';
+    if (timerRunning) cls += ' pulsing';
+  } else if (timerSeconds <= warningSeconds) {
+    cls = 'timer-time warning';
+  }
+  document.getElementById('timer-display').className = cls;
+  document.getElementById('fs-timer-display').className = 'fs-timer-time ' + cls;
+
+  // Progress ring
+  const circumference = 2 * Math.PI * 115;
+  const prog = totalSeconds > 0 ? timerSeconds / totalSeconds : 0;
+  const offset = circumference * (1 - prog);
+  const ringColor = timerSeconds <= 10 ? '#d94040' : (timerSeconds <= warningSeconds ? '#e07b00' : 'var(--teal)');
+  ['timer-prog', 'fs-timer-prog'].forEach(id => {
+    const ring = document.getElementById(id);
+    if (ring) {
+      ring.style.strokeDashoffset = offset;
+      ring.style.stroke = ringColor;
+    }
+  });
+}
+
+function adjustTime(delta) {
+  if (timerRunning) return;
+  const newTime = Math.max(10, Math.min(3600, phaseSettings[currentPhase].time + delta));
+  phaseSettings[currentPhase].time = newTime;
+  timerSeconds = newTime;
+  totalSeconds = newTime;
+  updateTimerDisplay();
+  updateSettingsDisplay();
+}
+
+function adjustWarning(delta) {
+  const newWarn = Math.max(10, Math.min(phaseSettings[currentPhase].time - 10, phaseSettings[currentPhase].warning + delta));
+  phaseSettings[currentPhase].warning = newWarn;
+  warningSeconds = newWarn;
+  updateSettingsDisplay();
+}
+
+function updateSettingsDisplay() {
+  const t = phaseSettings[currentPhase].time;
+  const m = Math.floor(t/60), s = t%60;
+  document.getElementById('set-time-display').textContent = s > 0 ? `${m}分${String(s).padStart(2,'0')}秒` : `${m}分`;
+  document.getElementById('set-warn-display').textContent = `${phaseSettings[currentPhase].warning}秒`;
+}
+
+function toggleMute() {
+  isMuted = !isMuted;
+  document.getElementById('mute-btn').textContent = isMuted ? '🔇' : '🔔';
+  showToast(isMuted ? '音效已靜音' : '音效已開啟');
+}
+
+// ─── AUTO-ADVANCE ─────────────────────────────────
+function toggleAutoAdvance() {
+  autoAdvanceEnabled = document.getElementById('auto-advance-toggle').checked;
+  showToast(autoAdvanceEnabled ? `已開啟自動換階段（${autoAdvanceDelay}秒緩衝）` : '已關閉自動換階段');
+}
+
+function adjustAutoDelay(delta) {
+  autoAdvanceDelay = Math.max(1, Math.min(30, autoAdvanceDelay + delta));
+  document.getElementById('auto-delay-display').textContent = `${autoAdvanceDelay}秒`;
+}
+
+function startAutoAdvanceCountdown() {
+  let remaining = autoAdvanceDelay;
+  const bar = document.getElementById('auto-advance-bar');
+  const txt = document.getElementById('auto-countdown-text');
+  bar.classList.add('countdown-active');
+  txt.textContent = `${remaining}秒後自動切換...`;
+
+  autoAdvanceCountdown = setInterval(() => {
+    remaining--;
+    if (remaining <= 0) {
+      clearAutoAdvanceCountdown();
+      selectPhase(currentPhase + 1);
+      showToast(`自動進入${phaseDefaults[currentPhase].name}`);
+    } else {
+      txt.textContent = `${remaining}秒後自動切換...`;
+    }
+  }, 1000);
+}
+
+function clearAutoAdvanceCountdown() {
+  if (autoAdvanceCountdown) {
+    clearInterval(autoAdvanceCountdown);
+    autoAdvanceCountdown = null;
+  }
+  const bar = document.getElementById('auto-advance-bar');
+  const txt = document.getElementById('auto-countdown-text');
+  if (bar) bar.classList.remove('countdown-active');
+  if (txt) txt.textContent = '';
+}
+
+// ─── FULLSCREEN ───────────────────────────────────
+let escHintTimer = null;
+function enterFullscreen() {
+  isFullscreen = true;
+  document.getElementById('fullscreen-overlay').classList.add('show');
+  const hint = document.getElementById('fs-esc-hint');
+  hint.style.display = 'block';
+  hint.style.opacity = '1';
+  clearTimeout(escHintTimer);
+  escHintTimer = setTimeout(() => {
+    hint.style.opacity = '0';
+    setTimeout(() => { hint.style.display = 'none'; }, 600);
+  }, 3000);
+  updateTimerDisplay();
+  renderFsGroups();
+}
+
+function exitFullscreen() {
+  isFullscreen = false;
+  document.getElementById('fullscreen-overlay').classList.remove('show');
+  const hint = document.getElementById('fs-esc-hint');
+  clearTimeout(escHintTimer);
+  hint.style.opacity = '0';
+  hint.style.display = 'none';
+}
+
+function renderFsGroups() {
+  const grid = document.getElementById('fs-groups-grid');
+  const badge = document.getElementById('fs-rotation-badge');
+  if (!grid) return;
+  if (groups.length === 0) {
+    grid.innerHTML = '';
+    if (badge) badge.textContent = '';
+    document.getElementById('fs-groups-panel').style.display = 'none';
+    return;
+  }
+  document.getElementById('fs-groups-panel').style.display = 'block';
+  const maxRounds = Math.max(...groups.map(g => g.length));
+  if (badge) {
+    badge.textContent = currentRotation < maxRounds
+      ? `第 ${currentRotation + 1} 輪` : '全部完成';
+  }
+  grid.innerHTML = groups.map((grp, gi) => {
+    const intervieweeIdx = currentRotation % grp.length;
+    const rows = grp.map((name, mi) => {
+      const isInterviewee = mi === intervieweeIdx;
+      return `<div class="timer-role-row ${isInterviewee ? 'interviewee' : ''}">
+        <span class="role-badge ${isInterviewee ? 'host' : 'judge'}">${isInterviewee ? '面試者' : '主考官'}</span>
+        <span class="timer-role-name">${name}</span>
+      </div>`;
+    }).join('');
+    return `<div class="timer-group-card">
+      <div class="timer-group-card-header">
+        <span class="timer-group-card-title">第 ${gi+1} 組</span>
+        <span class="timer-group-card-count">${grp.length} 人</span>
+      </div>
+      <div class="timer-group-card-body">${rows}</div>
+    </div>`;
+  }).join('');
+}
+
+// ESC key to close fullscreen
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' && isFullscreen) {
+    exitFullscreen();
+  }
+});
+
+// ─── MODAL ───────────────────────────────────────
+function showModal(icon, title, msg, action) {
+  document.getElementById('modal-icon').textContent = icon;
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-msg').textContent = msg;
+  pendingModalAction = action;
+  document.getElementById('confirm-modal').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('confirm-modal').classList.remove('show');
+  pendingModalAction = null;
+}
+
+function modalConfirmAction() {
+  const action = pendingModalAction;  // save BEFORE closeModal clears it
+  closeModal();
+  if (action) action();
+}
+
+// ─── SESSION LOG ─────────────────────────────────
+function addLog(type, detail) {
+  const now = new Date();
+  const timeStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+  sessionLog.unshift({ time: timeStr, type, detail });
+}
+
+function renderLog() {
+  const list = document.getElementById('log-list');
+  if (sessionLog.length === 0) {
+    list.innerHTML = `<div style="text-align:center;padding:60px 20px;color:var(--text3);"><div style="font-size:36px;margin-bottom:12px;">📋</div><div style="font-size:15px;">尚無紀錄</div><div style="font-size:13px;margin-top:6px;">開始面試後，這裡會顯示活動紀錄</div></div>`;
+    return;
+  }
+  list.innerHTML = sessionLog.map((entry, i) => `
+    <div class="log-entry fade-in">
+      <span class="log-time">${entry.time}</span>
+      <span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;background:rgba(33,150,201,0.1);color:var(--teal);white-space:nowrap;">${entry.type}</span>
+      <span class="log-label">${entry.detail}</span>
+    </div>
+  `).join('');
+}
+
+function copyLog() {
+  if (sessionLog.length === 0) { showToast('紀錄是空的'); return; }
+  const text = sessionLog.map(e => `[${e.time}] ${e.type}：${e.detail}`).join('\n');
+  navigator.clipboard.writeText(text).then(() => showToast('紀錄已複製！'));
+}
+
+function clearLog() {
+  showModal('🗑️', '清除紀錄', '確定要清除所有活動紀錄嗎？此操作不可恢復。', () => {
+    sessionLog = [];
+    document.getElementById('log-count-badge').innerHTML = '📋 0 筆紀錄';
+    renderLog();
+    showToast('紀錄已清除');
+  });
+}
+
+// ─── TOAST ───────────────────────────────────────
+let toastTimeout;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ─── INIT ─────────────────────────────────────────
+updateSettingsDisplay();
+updateTimerDisplay();
+renderGroups();
+renderTimerGroupSelector();
+</script>
+</body>
+</html>
